@@ -23,9 +23,9 @@ jobs:
 
       - name: Get config.json
         run: |
-          echo "====== 检查 config.josn 文件 ======"
+          echo "====== 检查 config.json 文件 ======"
           cat config.json
-          echo "====== 检查 config.josn end  ======"
+          echo "====== 检查 config.json end  ======"
           sudo apt-get install jq
 
       - name: Set up Python
@@ -35,11 +35,11 @@ jobs:
 
       - name: Clone source code
         run: |
-          GMEEK_VERSION=$(jq -r ".GMEEK_VERSION" config.json)
-          git clone https://github.com/Meekdai/Gmeek.git /opt/Gmeek;
-          cd /opt/Gmeek/
+          GRD_VERSION=$(jq -r ".GRD_VERSION" config.json)
+          git clone https://github.com/grd291/Gmeek.git /opt/GRD;
+          cd /opt/GRD/
           lastTag=$(git describe --tags `git rev-list --tags --max-count=1`)
-          if [ $GMEEK_VERSION == 'last' ]; then git checkout $lastTag; else git checkout $GMEEK_VERSION; fi;
+          if [ $GRD_VERSION == 'last' ]; then git checkout $lastTag; else git checkout $GRD_VERSION; fi;
 
       - name: Install dependencies
         run: |
@@ -50,7 +50,7 @@ jobs:
         run: |
           cp -r ./* /opt/GRD/
           cd /opt/GRD/
-          python Gmeek.py ${{ secrets.GITHUB_TOKEN }} ${{ github.repository }} --issue_number '${{ github.event.issue.number }}'
+          python GRD.py ${{ secrets.GITHUB_TOKEN }} ${{ github.repository }} --issue_number '${{ github.event.issue.number }}'
           cp -a /opt/GRD/docs ${{ github.workspace }} 
           cp -a /opt/GRD/backup ${{ github.workspace }} 
           cp /opt/GRD/blogBase.json ${{ github.workspace }} 
