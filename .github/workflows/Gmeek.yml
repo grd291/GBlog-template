@@ -1,4 +1,4 @@
-name: build Gmeek
+name: build G.R.D
 
 on:
   workflow_dispatch:
@@ -23,9 +23,9 @@ jobs:
 
       - name: Get config.json
         run: |
-          echo "====== check config.josn file ======"
+          echo "====== 检查 config.josn 文件 ======"
           cat config.json
-          echo "====== check config.josn end  ======"
+          echo "====== 检查 config.josn end  ======"
           sudo apt-get install jq
 
       - name: Set up Python
@@ -35,32 +35,32 @@ jobs:
 
       - name: Clone source code
         run: |
-          GMEEK_VERSION=$(jq -r ".GMEEK_VERSION" config.json)
-          git clone https://github.com/Meekdai/Gmeek.git /opt/Gmeek;
-          cd /opt/Gmeek/
+          GRD_VERSION=$(jq -r ".GRD_VERSION" config.json)
+          git clone https://github.com/grd291/Gmeek.git /opt/GRD;
+          cd /opt/GRD/
           lastTag=$(git describe --tags `git rev-list --tags --max-count=1`)
-          if [ $GMEEK_VERSION == 'last' ]; then git checkout $lastTag; else git checkout $GMEEK_VERSION; fi;
+          if [ $GRD_VERSION == 'last' ]; then git checkout $lastTag; else git checkout $GRD_VERSION; fi;
 
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install -r /opt/Gmeek/requirements.txt
+          pip install -r /opt/GRD/requirements.txt
 
       - name: Generate new html
         run: |
-          cp -r ./* /opt/Gmeek/
-          cd /opt/Gmeek/
+          cp -r ./* /opt/GRD/
+          cd /opt/GRD/
           python Gmeek.py ${{ secrets.GITHUB_TOKEN }} ${{ github.repository }} --issue_number '${{ github.event.issue.number }}'
-          cp -a /opt/Gmeek/docs ${{ github.workspace }} 
-          cp -a /opt/Gmeek/backup ${{ github.workspace }} 
-          cp /opt/Gmeek/blogBase.json ${{ github.workspace }} 
+          cp -a /opt/GRD/docs ${{ github.workspace }} 
+          cp -a /opt/GRD/backup ${{ github.workspace }} 
+          cp /opt/GRD/blogBase.json ${{ github.workspace }} 
           
       - name: update html
         run: |
           git config --local user.email "$(jq -r ".email" config.json)"
           git config --local user.name "${{ github.repository_owner }}"
           git add .
-          git commit -a -m '🎉auto update by Gmeek action' || echo "nothing to commit"
+          git commit -a -m '🎉通过 G.R.D 操作自动更新' || echo "nothing to commit"
           git push || echo "nothing to push"
           sleep 3
           
