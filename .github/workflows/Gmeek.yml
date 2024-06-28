@@ -38,8 +38,17 @@ jobs:
           GRD_VERSION=$(jq -r ".GRD_VERSION" config.json)
           git clone https://github.com/grd291/Gmeek.git /opt/GRD;
           cd /opt/GRD/
-          lastTag=$(git describe --tags `git rev-list --tags --max-count=1`)
-          if [ $GRD_VERSION == 'last' ]; then git checkout $lastTag; else git checkout $GRD_VERSION; fi;
+          lastTag=$(git describe --tags `git rev-list --tags --max-count=1` || echo "none")
+          if [ $GRD_VERSION == 'last' ]; then
+            if [ $lastTag != 'none' ]; then
+              git checkout $lastTag
+            else
+              echo "No tags found, staying on the default branch."
+            fi
+          else
+            git checkout $GRD_VERSION
+          fi
+
 
       - name: Install dependencies
         run: |
