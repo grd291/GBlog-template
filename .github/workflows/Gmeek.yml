@@ -36,7 +36,7 @@ jobs:
       - name: Clone source code
         run: |
           GRD_VERSION=$(jq -r ".GRD_VERSION" config.json)
-          git clone https://github.com/grd291/Gmeek.git /opt/GRD;
+          git clone https://github.com/grd291/GBlog.git /opt/GRD;
           cd /opt/GRD/
           lastTag=$(git describe --tags `git rev-list --tags --max-count=1` || echo "none")
           if [ $GRD_VERSION == 'last' ]; then
